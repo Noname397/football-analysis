@@ -1,5 +1,5 @@
 import React from "react";
-import { formatNumericValue } from "@/lib/utils";
+import { formatNumericValue } from "../lib/utils";
 import { DEFAULT_STEP_PRECISION, DEFAULT_UNITS } from "@/lib/constants/numeric";
 
 export interface NumericDisplayProps {
