@@ -7,14 +7,8 @@ from scrapers.player_stats import detailed_player_stats
 from lib.constants import fbref_domain
 
 def scraper():
-    comp_url = fbref_domain + "/en/comps/"
-    leagues_urls = getTierOneCompetitionUrls(comp_url=comp_url)
-    example_league_url = leagues_urls[0]
-    most_recent_seasons = getSeasonsURL(league_url=example_league_url, num_seasons=5)
-    for url in leagues_urls:
-        most_recent_seasons = getSeasonsURL(league_url=url, num_seasons=5)
-        # print(f"Most recent seasons for {url}: {most_recent_seasons}")
-    most_recent_season = most_recent_seasons[0]
+    example_league_url = "https://fbref.com/en/comps/9/Premier-League-Stats"
+    most_recent_season = getSeasonsURL(league_url=example_league_url, num_seasons=1)
     player_stats_link = getLeagueStats(season_url=most_recent_season)
     player_urls = getPlayerURLs(season_stats_url=player_stats_link)
     for player_url in player_urls[:5]:

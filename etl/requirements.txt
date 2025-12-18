@@ -2,3 +2,6 @@ selenium
 urllib3
 pandas
 beautifulsoup4
+cloudscraper
+google-cloud-storage
+requests
