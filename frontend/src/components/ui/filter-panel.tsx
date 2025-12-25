@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useState, useMemo } from "react";
+import { Button } from "./button";
+import { Card, CardContent } from "./card";
+import { Input } from "./input";
+import { Badge } from "./badge";
 import { Search, Plus, ChevronUp, X, ArrowUpDown } from "lucide-react";
 import {
   Select,
@@ -12,40 +12,54 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "./select";
 
 // Base filter configuration
 export interface FilterFieldConfig<T> {
   key: keyof T;
   label: string;
-  type: 'text' | 'select' | 'multiselect' | 'daterange' | 'number' | 'reference';
+  type:
+    | "text"
+    | "select"
+    | "multiselect"
+    | "daterange"
+    | "number"
+    | "reference";
   searchable?: boolean;
   sortable?: boolean;
   // For reference fields (foreign keys)
   referenceConfig?: {
     displayField: string; // Field to show in UI (e.g., 'name')
-    valueField: string;   // Field to use as value (e.g., 'uuid')
+    valueField: string; // Field to use as value (e.g., 'uuid')
     searchEndpoint?: string; // Optional: API endpoint to search
-    data?: any[];        // Static data if available
+    data?: unknown[]; // Static data if available
   };
   // For select fields
   options?: { value: string; label: string }[];
   // Custom render function for complex filtering
-  renderFilter?: (value: any, onChange: (value: any) => void) => React.ReactNode;
+  renderFilter?: (
+    value: unknown,
+    onChange: (value: unknown) => void
+  ) => React.ReactNode;
 }
 
 export interface FilterConfig<T> {
-  searchFields: (keyof T)[];  // Fields to include in text search
+  searchFields: (keyof T)[]; // Fields to include in text search
   filterFields: FilterFieldConfig<T>[];
-  sortOptions: { value: string; label: string; field: keyof T; direction: 'asc' | 'desc' }[];
+  sortOptions: {
+    value: string;
+    label: string;
+    field: keyof T;
+    direction: "asc" | "desc";
+  }[];
 }
 
 export interface FilterPanelProps<T> {
   data?: T[];
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  filters: Record<string, any>;
-  onFiltersChange: (filters: Record<string, any>) => void;
+  filters: Record<string, unknown>;
+  onFiltersChange: (filters: Record<string, unknown>) => void;
   sortBy: string;
   onSortChange: (sortBy: string) => void;
   config: FilterConfig<T>;
@@ -69,18 +83,26 @@ export function FilterPanel<T>({
 
   // Calculate if there are active filters
   const hasActiveFilters = useMemo(() => {
-    return Object.keys(filters).some(key => {
+    return Object.keys(filters).some((key) => {
       const value = filters[key];
-      return value !== undefined && value !== null && value !== '' && 
-             (Array.isArray(value) ? value.length > 0 : true);
+      return (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        (Array.isArray(value) ? value.length > 0 : true)
+      );
     });
   }, [filters]);
 
   // Handle filter changes
-  const handleFilterChange = (key: string, value: any) => {
+  const handleFilterChange = (key: string, value: unknown) => {
     const newFilters = { ...filters };
-    if (value === undefined || value === null || value === '' || 
-        (Array.isArray(value) && value.length === 0)) {
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
       delete newFilters[key];
     } else {
       newFilters[key] = value;
@@ -109,23 +131,25 @@ export function FilterPanel<T>({
     const value = filters[key];
 
     switch (fieldConfig.type) {
-      case 'text':
+      case "text":
         return (
           <Input
             placeholder={`Filter by ${fieldConfig.label.toLowerCase()}...`}
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => handleFilterChange(key, e.target.value)}
           />
         );
 
-      case 'select':
+      case "select":
         return (
           <Select
-            value={value || ''}
+            value={value || ""}
             onValueChange={(newValue) => handleFilterChange(key, newValue)}
           >
             <SelectTrigger>
-              <SelectValue placeholder={`Select ${fieldConfig.label.toLowerCase()}`} />
+              <SelectValue
+                placeholder={`Select ${fieldConfig.label.toLowerCase()}`}
+              />
             </SelectTrigger>
             <SelectContent>
               {fieldConfig.options?.map((option) => (
@@ -137,75 +161,91 @@ export function FilterPanel<T>({
           </Select>
         );
 
-      case 'reference':
+      case "reference":
         if (fieldConfig.referenceConfig && fieldConfig.renderFilter) {
-          return fieldConfig.renderFilter(value, (newValue) => handleFilterChange(key, newValue));
+          return fieldConfig.renderFilter(value, (newValue) =>
+            handleFilterChange(key, newValue)
+          );
         }
         return null;
 
-      case 'multiselect':
+      case "multiselect":
         if (fieldConfig.renderFilter) {
-          return fieldConfig.renderFilter(value, (newValue) => handleFilterChange(key, newValue));
+          return fieldConfig.renderFilter(value, (newValue) =>
+            handleFilterChange(key, newValue)
+          );
         }
         return null;
 
-      case 'daterange':
+      case "daterange":
         if (fieldConfig.renderFilter) {
-          return fieldConfig.renderFilter(value, (newValue) => handleFilterChange(key, newValue));
+          return fieldConfig.renderFilter(value, (newValue) =>
+            handleFilterChange(key, newValue)
+          );
         }
         return null;
 
-      case 'number':
+      case "number":
         return (
           <Input
             type="number"
             placeholder={`Filter by ${fieldConfig.label.toLowerCase()}...`}
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => handleFilterChange(key, e.target.value)}
           />
         );
 
       default:
         if (fieldConfig.renderFilter) {
-          return fieldConfig.renderFilter(value, (newValue) => handleFilterChange(key, newValue));
+          return fieldConfig.renderFilter(value, (newValue) =>
+            handleFilterChange(key, newValue)
+          );
         }
         return null;
     }
   };
 
   // Get display value for filter badges
-  const getFilterDisplayValue = (key: string, value: any, fieldConfig: FilterFieldConfig<T>) => {
+  const getFilterDisplayValue = (
+    key: string,
+    value: any,
+    fieldConfig: FilterFieldConfig<T>
+  ) => {
     if (Array.isArray(value)) {
       return value.length > 1 ? `${value.length} items` : value[0];
     }
-    
+
     // For select fields, show the label instead of value
-    if (fieldConfig.type === 'select' && fieldConfig.options) {
-      const option = fieldConfig.options.find(opt => opt.value === value);
+    if (fieldConfig.type === "select" && fieldConfig.options) {
+      const option = fieldConfig.options.find((opt) => opt.value === value);
       return option ? option.label : value;
     }
-    
+
     // For date ranges, format them nicely
-    if (fieldConfig.type === 'daterange' && value?.from && value?.to) {
+    if (fieldConfig.type === "daterange" && value?.from && value?.to) {
       try {
-        const formatter = new Intl.DateTimeFormat('en-US', { 
-          month: 'short', 
-          day: 'numeric', 
-          year: 'numeric' 
+        const formatter = new Intl.DateTimeFormat("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
         });
-        return `${formatter.format(new Date(value.from))} - ${formatter.format(new Date(value.to))}`;
+        return `${formatter.format(new Date(value.from))} - ${formatter.format(
+          new Date(value.to)
+        )}`;
       } catch {
-        return 'Date range';
+        return "Date range";
       }
     }
-    
+
     return value;
   };
 
   // Render active filter badges
   const renderActiveFilterBadges = () => {
     return Object.entries(filters).map(([key, value]) => {
-      const fieldConfig = config.filterFields.find(f => String(f.key) === key);
+      const fieldConfig = config.filterFields.find(
+        (f) => String(f.key) === key
+      );
       if (!fieldConfig || !value) return null;
 
       const displayValue = getFilterDisplayValue(key, value, fieldConfig);
@@ -235,7 +275,7 @@ export function FilterPanel<T>({
         <div className="space-y-3">
           {/* Header section with search and controls */}
           <div className="flex items-center justify-between">
-            {/* <div className="relative mr-4 flex-1">
+            <div className="relative mr-4 flex-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={searchPlaceholder}
@@ -243,7 +283,7 @@ export function FilterPanel<T>({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
-            </div> */}
+            </div>
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={onSortChange}>
                 <SelectTrigger className="h-8 w-[10em] text-xs [&>svg:last-child]:hidden">
@@ -259,7 +299,12 @@ export function FilterPanel<T>({
                 </SelectContent>
               </Select>
               {hasActiveFilters && (
-                <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={handleClearAll}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={handleClearAll}
+                >
                   Clear all
                 </Button>
               )}

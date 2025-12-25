@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./button";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "./table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Loading from "@/app/instances/loading";
 
@@ -28,7 +28,7 @@ export interface TableConfig<T> {
   emptyMessage?: string;
   rowClassName?: (item: T) => string;
   sortable?: boolean;
-  defaultSort?: { column: string; direction: 'asc' | 'desc' };
+  defaultSort?: { column: string; direction: "asc" | "desc" };
 }
 
 // Main component props
@@ -99,8 +99,8 @@ export default function PaginatedTable<T>({
   };
 
   // Filter visible columns based on conditional property
-  const visibleColumns = config.columns.filter(column => 
-    column.conditional === undefined || column.conditional === true
+  const visibleColumns = config.columns.filter(
+    (column) => column.conditional === undefined || column.conditional === true
   );
 
   // Calculate colspan for empty message
@@ -108,7 +108,6 @@ export default function PaginatedTable<T>({
 
   return (
     <div className="py-3">
-
       {isLoading ? (
         <Loading />
       ) : (
@@ -118,9 +117,11 @@ export default function PaginatedTable<T>({
               <TableHeader className="bg-muted/50">
                 <TableRow>
                   {visibleColumns.map((column) => (
-                    <TableHead 
+                    <TableHead
                       key={column.key}
-                      className={`${column.width || ''} ${column.className || ''}`}
+                      className={`${column.width || ""} ${
+                        column.className || ""
+                      }`}
                     >
                       {column.header}
                     </TableHead>
@@ -134,7 +135,7 @@ export default function PaginatedTable<T>({
                       colSpan={colSpan}
                       className="py-4 text-center text-muted-foreground"
                     >
-                      {config.emptyMessage || 'No data found'}
+                      {config.emptyMessage || "No data found"}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -142,12 +143,15 @@ export default function PaginatedTable<T>({
                     <TableRow
                       key={getItemKey(item)}
                       className={`cursor-pointer hover:bg-primary/5 ${
-                        config.rowClassName ? config.rowClassName(item) : ''
+                        config.rowClassName ? config.rowClassName(item) : ""
                       }`}
                       onClick={() => onRowClick?.(item)}
                     >
                       {visibleColumns.map((column) => (
-                        <TableCell key={column.key} className={column.className}>
+                        <TableCell
+                          key={column.key}
+                          className={column.className}
+                        >
                           {column.render(item)}
                         </TableCell>
                       ))}
@@ -169,9 +173,7 @@ export default function PaginatedTable<T>({
                   type="text"
                   value={pageInputValue}
                   onChange={(e) => setPageInputValue(e.target.value)}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && handlePageNavigation()
-                  }
+                  onKeyDown={(e) => e.key === "Enter" && handlePageNavigation()}
                   className={`h-8 w-14 rounded border px-2 text-center text-sm ${
                     pageInputError
                       ? "border-red-500 text-red-500"

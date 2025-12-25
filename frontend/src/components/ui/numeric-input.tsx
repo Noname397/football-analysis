@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { formatNumericValue } from "@/lib/utils";
-import { DEFAULT_STEP_PRECISION, DEFAULT_UNITS } from "@/lib/constants/numeric";
+import { Input } from "./input";
+import { formatNumericValue } from "../../lib/utils";
 
 export interface FloatingInput {
   value: number;
@@ -25,10 +24,10 @@ export function NumericInput({
   type = "float",
   min,
   max,
-  step = DEFAULT_STEP_PRECISION,
+  step = 0.01,
   disabled = false,
   id = undefined,
-  units = DEFAULT_UNITS,
+  units = "",
 }: FloatingInput) {
   if (min !== undefined && max !== undefined && min > max) {
     throw new Error("min cannot be greater than max");
@@ -92,7 +91,7 @@ export function NumericInput({
 
   useEffect(() => {
     setValueWhileTyping(formatNumericValue(value, type, step));
-  }, [value]);
+  }, [value, type, step]);
 
   return (
     <div className="flex items-center">

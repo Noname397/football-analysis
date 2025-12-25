@@ -1,6 +1,4 @@
-import React from "react";
-import { formatNumericValue } from "@/lib/utils";
-import { DEFAULT_STEP_PRECISION, DEFAULT_UNITS } from "@/lib/constants/numeric";
+import { formatNumericValue } from "../../lib/utils";
 
 export interface NumericDisplayProps {
   value: number;
@@ -13,8 +11,8 @@ export interface NumericDisplayProps {
 export function NumericDisplay({
   value,
   type = "float",
-  step = DEFAULT_STEP_PRECISION,
-  units = DEFAULT_UNITS,
+  step = 0.01,
+  units = "",
   className = "",
 }: NumericDisplayProps) {
   return (

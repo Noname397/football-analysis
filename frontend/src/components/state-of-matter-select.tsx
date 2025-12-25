@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Box, Droplet, Cloud } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 type StateOfMatter = "solid" | "liquid" | "gas";
 

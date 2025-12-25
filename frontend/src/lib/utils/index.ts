@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { DEFAULT_STEP_PRECISION } from "@/lib/constants/numeric";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -42,7 +41,7 @@ export const formatDate = (dateString: string) => {
 export function formatNumericValue(
   value: number,
   type: "integer" | "float" = "float",
-  step: number = DEFAULT_STEP_PRECISION
+  step: number = 0.01
 ): string {
   if (type === "integer") {
     return Math.round(value).toString();
@@ -59,7 +58,7 @@ export function formatNumericValue(
   return value.toString();
 }
 
-export function noop(...args: any[]) {
+export function noop() {
   // No operation function, does nothing
   return;
 }

@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn, noop } from "@/lib/utils";
+import { cn, noop } from "../../lib/utils";
 
 import {
   Command,
